@@ -1,0 +1,32 @@
+{
+  "name": "grpc-example",
+  "version": "1.0.0",
+  "description": "Example of how to build a project with gRPC",
+  "homepage": "https://github.com/nickelpro/grpc-example",
+  "maintainers": [
+    "Vito Gamberini <vito@gamberini.email>"
+  ],
+  "license": "MIT-0",
+  "dependencies": [
+    {
+      "name": "grpc",
+      "features": [
+        "codegen"
+      ]
+    },
+    "fmt"
+  ],
+  "vcpkg-configuration": {
+    "default-registry": {
+      "kind": "git",
+      "baseline": "a0f974c66a1c56e974d37b5707e312742aead974",
+      "repository": "https://github.com/microsoft/vcpkg.git"
+    },
+    "overlay-ports": [
+      "./vcpkg/ports"
+    ],
+    "overlay-triplets": [
+      "./vcpkg/triplets"
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+# IDE and development folders
+.vscode/
+
+# Miscellaneous build and testing folders
+build/

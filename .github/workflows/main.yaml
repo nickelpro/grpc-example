@@ -1,0 +1,76 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+jobs:
+  build_windows:
+    name: Build on Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Export GitHub Actions cache environment variables
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure
+        env:
+          VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+        run: cmake . -DCMAKE_BUILD_TYPE=Release -DVCPKG_TARGET_TRIPLET=x64-windows-static-rel -DVCPKG_HOST_TRIPLET=x64-windows-static-rel -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded --toolchain=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
+
+      - name: Build
+        run: cmake --build . -j
+
+  build_macos:
+    name: Build on MacOS
+    runs-on: macos-latest
+
+    steps:
+      - name: Export GitHub Actions cache environment variables
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure
+        env:
+          VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+        run: cmake . -DCMAKE_BUILD_TYPE=Release -DVCPKG_TARGET_TRIPLET=arm64-macos-static-rel -DVCPKG_HOST_TRIPLET=arm64-macos-static-rel -DBOOTSTRAP_VCPKG=ON
+
+      - name: Build
+        run: cmake --build . -j
+
+  build_linux:
+    name: Build on Linux
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Export GitHub Actions cache environment variables
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure
+        env:
+          VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+        run: cmake . -DCMAKE_BUILD_TYPE=Release -DVCPKG_TARGET_TRIPLET=x64-linux-static-rel -DVCPKG_HOST_TRIPLET=x64-linux-static-rel --toolchain=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake
+
+      - name: Build
+        run: cmake --build . -j
